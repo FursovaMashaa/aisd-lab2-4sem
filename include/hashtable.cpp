@@ -26,6 +26,7 @@ namespace HashTable{
         MyUnorderedMap(int size) : tableSize(size) {
             table.resize(tableSize);
         }
+
         MyUnorderedMap(int size, int a, int b) : tableSize(size) {
             table.resize(tableSize);
             random_device rd;
@@ -35,13 +36,29 @@ namespace HashTable{
                 insert(i, distribution(gen));
             }
         }
+
         MyUnorderedMap(const MyUnorderedMap& other) {
             tableSize = other.tableSize;
             table = other.table;
         }
+
         ~MyUnorderedMap() {
             table.clear();
             tableSize = 0;
+        }
+
+        bool operator==(const MyUnorderedMap& other) const {
+            if (tableSize != other.tableSize)
+                return false;
+
+            for (int i = 0; i < tableSize; i++) {
+                if (table[i].filled != other.table[i].filled ||
+                    table[i].key != other.table[i].key ||
+                    table[i].value != other.table[i].value)
+                    return false;
+            }
+
+            return true;
         }
         
         void print() {
@@ -51,15 +68,52 @@ namespace HashTable{
                 }
             }
         }
+
         void insert(const K& key, const T& value) {
             int index = hashFunction(key);
             while (table[index].filled) {
-                index = (index + 1) % tableSize;
+                index = (index + 1) % tableSize; 
             }
-            table[index] = HashElement<K, T>(key, value);
+            table[index] = Element<K, T>(key, value);
             table[index].filled = true;
         }
 
+        T search(const K& key) {
+            int index = hashFunction(key);
+            while (table[index].filled) {
+                if (table[index].key == key) {
+                    return table[index].value;
+                }
+                index = (index + 1) % tableSize;
+            }
+            throw std::out_of_range("Key not found");
+        }
+
+        int count(const K& key) {
+            int count = 0;
+            for (const auto& element : table) {
+                if (element.filled && element.key == key) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        bool erase(const K& key) {
+            int index = hashFunction(key);
+            int originalIndex = index;
+            while (table[index].filled) {
+                if (table[index].key == key) {
+                    table[index].filled = false;
+                    return true;
+                }
+                index = (index + 1) % tableSize;
+                if (index == originalIndex) {
+                    break; 
+                }
+            }
+            return false;
+        }
         
     };
 }
