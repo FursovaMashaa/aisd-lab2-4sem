@@ -2,6 +2,10 @@
 #include<hashtable.cpp>
 using namespace HashTable;
 int main() {
+    MyUnorderedMap<int, int> myMap1(10, 5); 
+    myMap1.print();
+
+    cout << "--------------" << endl;
     MyUnorderedMap<int, int> myMap(10);
 
     myMap.insert(1, 10);
@@ -29,6 +33,7 @@ int main() {
         cout << "Maps are not equal" << endl;
     }
 
+    cout << "--------------" << endl;
     return 0;
 
 }

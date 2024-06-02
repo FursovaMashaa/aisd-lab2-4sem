@@ -24,17 +24,14 @@ namespace HashTable{
         }
 
     public:
-        MyUnorderedMap(int size) : tableSize(size) {
-            table.resize(tableSize);
-        }
+        MyUnorderedMap(int size) : tableSize(size), table(size) {}
 
-        MyUnorderedMap(int size, int a, int b) : tableSize(size) {
-            table.resize(tableSize);
-            random_device rd;
-            mt19937 gen(rd());
-            uniform_int_distribution<int> distribution(a, b);
-            for (int i = 0; i < size; i++) {
-                insert(i, distribution(gen));
+        MyUnorderedMap(int size, int elements) : tableSize(size), table(size) {
+            srand(time(0)); 
+            for (int i = 0; i < elements; ++i) {
+                K key = rand() % 100; 
+                T value = rand() % 1000; 
+                insert(key, value);
             }
         }
 
@@ -92,15 +89,16 @@ namespace HashTable{
                 table[index].value = value;
             }
         }
-        T search(const K& key) {
+        T* search(K key) {
             int index = hashFunction(key);
-            while (table[index].filled) {
-                if (table[index].key == key) {
-                    return table[index].value;
-                }
+            while (table[index].key != key && table[index].filled) {
                 index = (index + 1) % tableSize;
+                if (index == hashFunction(key)) return nullptr;
             }
-            throw std::out_of_range("Key not found");
+            if (table[index].key == key) {
+                return &table[index].value; 
+            }
+            return nullptr; 
         }
 
 
@@ -141,3 +139,5 @@ namespace HashTable{
         
     };
 }
+
+
