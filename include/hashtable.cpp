@@ -3,23 +3,24 @@
 #include <vector>
 #include <random>
 using namespace std;
+
 namespace HashTable{
     template <typename K, typename T>
-    struct Element {
+    struct Pair {
         K key;
         T value;
         bool filled;
-        Element() : key(K()), value(T()), filled(false) {}
-        Element(K _key, T _value) : key(_key), value(_value), filled(false) {}
+        Pair() : key(K()), value(T()), filled(false) {}
+        Pair(K _key, T _value) : key(_key), value(_value), filled(false) {}
     };
     template <typename K, typename T>
     class MyUnorderedMap {
     private:
         int tableSize;
-        vector<Element<K, T>> table;
+        vector<Pair<K, T>> table;
 
         int hashFunction(const K& key) {
-            return std::hash<K>{}(key) % tableSize;
+            return key % tableSize;
         }
 
     public:
@@ -74,10 +75,23 @@ namespace HashTable{
             while (table[index].filled) {
                 index = (index + 1) % tableSize; 
             }
-            table[index] = Element<K, T>(key, value);
+            table[index] = Pair<K, T>(key, value);
             table[index].filled = true;
         }
 
+        void insert_or_assign(K key, T value) {
+            int index = hashFunction(key);
+            if (table[index].filled && table[index].key == key) {
+                table[index].value = value;
+            }
+            else {
+                if (!table[index].filled) {
+                    table[index].filled = true;
+                }
+                table[index].key = key;
+                table[index].value = value;
+            }
+        }
         T search(const K& key) {
             int index = hashFunction(key);
             while (table[index].filled) {
@@ -89,15 +103,6 @@ namespace HashTable{
             throw std::out_of_range("Key not found");
         }
 
-        int count(const K& key) {
-            int count = 0;
-            for (const auto& element : table) {
-                if (element.filled && element.key == key) {
-                    count++;
-                }
-            }
-            return count;
-        }
 
         bool erase(const K& key) {
             int index = hashFunction(key);
@@ -110,6 +115,25 @@ namespace HashTable{
                 index = (index + 1) % tableSize;
                 if (index == originalIndex) {
                     break; 
+                }
+            }
+            return false;
+        }
+
+        int count(const K& key) {
+            int count = 0;
+            for (const auto& element : table) {
+                if (element.filled && element.key == key) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        bool contains(T value) {
+            for (int i = 0; i < tableSize; i++) {
+                if (table[i].filled && table[i].value == value) {
+                    return true;
                 }
             }
             return false;

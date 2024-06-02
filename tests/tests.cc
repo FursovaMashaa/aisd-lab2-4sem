@@ -2,31 +2,33 @@
 #include<hashtable.cpp>
 using namespace HashTable;
 int main() {
-    int tableSize = 10; 
-    int a = 1;
-    int b = 100; 
+    MyUnorderedMap<int, int> myMap(10);
 
-    HashTable::MyUnorderedMap<int, int> myMap(tableSize, a, b);
-    std::cout << "Initial Map:" << std::endl;
-    myMap.print(); 
+    myMap.insert(1, 10);
+    myMap.insert(2, 20);
+    myMap.insert(3, 30);
+    myMap.insert(4, 40);
 
-    MyUnorderedMap<int, std::string> map(10);
+    myMap.print();
 
-    map.insert(1, "one");
-    map.insert(11, "eleven");
-    map.insert(21, "twenty-one");
-    map.insert(1, "one");
-    map.insert(11, "eleven");
-    map.insert(21, "twenty-one");
+    MyUnorderedMap<int, int> myMap2 = myMap;
 
-    std::cout << "Value for key 1: " << map.search(1) << std::endl;
-    std::cout << "Value for key 11: " << map.search(11) << std::endl;
-    std::cout << "Value for key 21: " << map.search(21) << std::endl;
+    if (myMap == myMap2) {
+        cout << "Maps are equal" << endl;
+    }
+    else {
+        cout << "Maps are not equal" << endl;
+    }
 
-    std::cout << "Count of elements with key 1: " << map.count(1) << std::endl;
-    std::cout << "Count of elements with key 11: " << map.count(11) << std::endl;
-    std::cout << "Count of elements with key 21: " << map.count(21) << std::endl;
+    myMap2.insert_or_assign(3, 300);
 
-    
+    if (myMap == myMap2) {
+        cout << "Maps are equal" << endl;
+    }
+    else {
+        cout << "Maps are not equal" << endl;
+    }
+
     return 0;
+
 }
