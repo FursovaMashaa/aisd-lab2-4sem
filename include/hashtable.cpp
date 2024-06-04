@@ -90,7 +90,7 @@ namespace HashTable{
             if (table[index].state != exists) {
                 table[index].state = exists;
                 tableSize++;
-                if (tableSize / table.size() >= 0.7) rehash();
+                if (tableSize / table.size() >= loadFactor) rehash();
             }
                 table[index].key = key;
                 table[index].value = value;
@@ -141,9 +141,9 @@ namespace HashTable{
 			}
 		}
 
-        size_t count()const {
+       /* size_t count()const {
             return tableSize;
-        }
+        }*/
 
         size_t size()const {
             return table.size();
